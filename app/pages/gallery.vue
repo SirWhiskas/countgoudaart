@@ -9,7 +9,7 @@ const pieces = [
 </script>
 
 <template>
-  <div class="pt-28 pb-20 px-6 md:px-12 max-w-6xl mx-auto">
+  <div class="pt-12 pb-20 px-6 md:px-12 max-w-6xl mx-auto">
     <h2 class="font-display text-xs tracking-[0.35em] uppercase text-ink-400 mb-16">Work</h2>
 
     <!-- Empty state while you add images -->

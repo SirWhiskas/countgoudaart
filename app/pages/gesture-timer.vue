@@ -33,6 +33,7 @@ const imagesForTiles = ref<GalleryImage[]>([])
 const timerValue = ref(120)
 const hasCompletedWarmUp = ref(false)
 const sidebarVisible = ref(false)
+const actionDrawerVisible = ref(false)
 const selectedFolderName = ref('')
 const localFolderSupported = isLocalFolderSupported()
 const localFolderLoading = ref(false)
@@ -269,29 +270,62 @@ onMounted(async () => {
       </div>
       <GestureTimer ref="gesture-timer" :time="timerValue" @on-times-up="handleTimerEnd" />
       <div class="flex items-center gap-1 shrink-0">
+        <WarmUp @on-warm-up-start="handleWarmUpStart" />
+        <!-- Secondary actions: inline on md+, drawer trigger on mobile -->
+        <div class="hidden md:flex items-center gap-1">
+          <Button
+            v-if="localFolderSupported"
+            icon="pi pi-folder-open"
+            label="Open Folder"
+            size="small"
+            severity="secondary"
+            :loading="localFolderLoading"
+            @click="openLocalFolder"
+          />
+          <Button
+            icon="pi pi-wifi"
+            size="small"
+            text
+            rounded
+            :severity="serverUrl ? 'success' : 'secondary'"
+            aria-label="Connect to RefServer"
+            @click="openConnectDialog"
+          />
+          <LotteryTiles :images="imagesForTiles" />
+          <Button icon="pi pi-arrow-left" label="Back to main site" size="small" text severity="secondary" @click="navigateTo('/')" />
+        </div>
+        <Button icon="pi pi-ellipsis-v" text rounded size="small" class="md:hidden" aria-label="More actions" @click="actionDrawerVisible = true" />
+      </div>
+    </header>
+
+    <!-- Right action drawer (mobile only) -->
+    <Drawer v-model:visible="actionDrawerVisible" position="right" style="width: 16rem">
+      <template #header>
+        <span class="font-semibold">Actions</span>
+      </template>
+      <div class="flex flex-col gap-2 p-2">
         <Button
           v-if="localFolderSupported"
           icon="pi pi-folder-open"
           label="Open Folder"
-          size="small"
           severity="secondary"
+          fluid
           :loading="localFolderLoading"
-          @click="openLocalFolder"
+          @click="() => { actionDrawerVisible = false; openLocalFolder() }"
         />
         <Button
-          icon="pi pi-wifi"
-          size="small"
-          text
-          rounded
+          :icon="serverUrl ? 'pi pi-wifi' : 'pi pi-wifi'"
+          :label="serverUrl ? 'RefServer: Connected' : 'Connect RefServer'"
           :severity="serverUrl ? 'success' : 'secondary'"
-          aria-label="Connect to RefServer"
-          @click="openConnectDialog"
+          fluid
+          @click="() => { actionDrawerVisible = false; openConnectDialog() }"
         />
-        <WarmUp @on-warm-up-start="handleWarmUpStart" />
         <LotteryTiles :images="imagesForTiles" />
-        <Button icon="pi pi-arrow-left" label="Back to main site" size="small" text severity="secondary" @click="navigateTo('/')" />
       </div>
-    </header>
+      <template #footer>
+        <Button icon="pi pi-arrow-left" label="Back to main site" text severity="secondary" fluid @click="navigateTo('/')" />
+      </template>
+    </Drawer>
 
     <!-- Main layout: sidebar + content -->
     <div class="flex flex-1 overflow-hidden">
