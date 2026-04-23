@@ -8,7 +8,7 @@ export default defineNuxtConfig({
     '@nuxt/image',
   ],
 
-  css: ['~/assets/css/main.css'],
+  css: ['~/assets/css/main.css', 'primeicons/primeicons.css'],
 
   app: {
     pageTransition: { name: 'page', mode: 'out-in' },

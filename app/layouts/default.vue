@@ -2,6 +2,7 @@
 const links = [
   { label: 'Work', to: '/gallery' },
   { label: 'About', to: '/about' },
+  { label: 'Studio', to: '/gesture-timer' },
 ]
 </script>
 

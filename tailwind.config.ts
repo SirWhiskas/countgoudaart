@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss'
+import tailwindPrimeUI from 'tailwindcss-primeui'
 
 export default {
   content: [
@@ -30,4 +31,5 @@ export default {
       },
     },
   },
+  plugins: [tailwindPrimeUI],
 } satisfies Config
