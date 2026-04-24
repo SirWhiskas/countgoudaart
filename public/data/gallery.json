@@ -1,0 +1,112 @@
+[
+  {
+    "imgTitle": "piece-01",
+    "imgSrc": "/art/gallery/piece-01.JPEG",
+    "artTitle": "Hallowed Transformation",
+    "artDimensions": {
+      "height": 12,
+      "width": 18
+    },
+    "artMedium": "Charcoal on newsprint",
+    "artDescription": ""
+  },
+  {
+    "imgTitle": "piece-02",
+    "imgSrc": "/art/gallery/piece-02.JPEG",
+    "artTitle": "The Wildling",
+    "artDimensions": {
+      "height": 12,
+      "width": 18
+    },
+    "artMedium": "Charcoal on newsprint",
+    "artDescription": ""
+  },
+  {
+    "imgTitle": "piece-03",
+    "imgSrc": "/art/gallery/piece-03.JPEG",
+    "artTitle": "The Dancer",
+    "artDimensions": {
+      "height": 24,
+      "width": 18
+    },
+    "artMedium": "Charcoal on newsprint",
+    "artDescription": ""
+  },
+  {
+    "imgTitle": "piece-04",
+    "imgSrc": "/art/gallery/piece-04.JPEG",
+    "artTitle": "Caught",
+    "artDimensions": {
+      "height": 24,
+      "width": 18
+    },
+    "artMedium": "Charcoal on newsprint",
+    "artDescription": ""
+  },
+  {
+    "imgTitle": "piece-05",
+    "imgSrc": "/art/gallery/piece-05.JPEG",
+    "artTitle": "Serpent's Tale Part I",
+    "artDimensions": {
+      "height": 18,
+      "width": 12
+    },
+    "artMedium": "Charcoal on newsprint",
+    "artDescription": ""
+  },
+  {
+    "imgTitle": "piece-06",
+    "imgSrc": "/art/gallery/piece-06.JPEG",
+    "artTitle": "Serpent's Tale Part II",
+    "artDimensions": {
+      "height": 24,
+      "width": 18
+    },
+    "artMedium": "Charcoal on newsprint",
+    "artDescription": ""
+  },
+  {
+    "imgTitle": "piece-07",
+    "imgSrc": "/art/gallery/piece-07.JPEG",
+    "artTitle": "Fantasy Study",
+    "artDimensions": {
+      "height": 12,
+      "width": 18
+    },
+    "artMedium": "Charcoal on newsprint",
+    "artDescription": ""
+  },
+  {
+    "imgTitle": "piece-08",
+    "imgSrc": "/art/gallery/piece-08.JPEG",
+    "artTitle": "Bloom",
+    "artDimensions": {
+      "height": 12,
+      "width": 18
+    },
+    "artMedium": "Charcoal on newsprint",
+    "artDescription": ""
+  },
+  {
+    "imgTitle": "piece-09",
+    "imgSrc": "/art/gallery/piece-09.JPEG",
+    "artTitle": "The Mourner",
+    "artDimensions": {
+      "height": 12,
+      "width": 18
+    },
+    "artMedium": "Charcoal on newsprint",
+    "artDescription": ""
+  },
+  {
+    "imgTitle": "piece-10",
+    "imgSrc": "/art/gallery/piece-10.JPEG",
+    "artTitle": "Gestural Dance",
+    "artDimensions": {
+      "height": 18,
+      "width": 12
+    },
+    "artMedium": "Charcoal on newsprint",
+    "artDescription": ""
+  }
+]

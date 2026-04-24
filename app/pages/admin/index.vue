@@ -9,7 +9,7 @@ async function logout() {
 </script>
 
 <template>
-  <div class="h-dvh flex flex-col bg-ink-950">
+  <div class="min-h-dvh flex flex-col bg-ink-950 text-ink-100">
     <header class="shrink-0 flex items-center justify-between px-6 py-4 border-b border-ink-800">
       <span class="font-display text-xs tracking-[0.25em] uppercase text-ink-400">Admin</span>
       <button
@@ -20,8 +20,8 @@ async function logout() {
       </button>
     </header>
 
-    <main class="flex-1 flex items-center justify-center text-ink-600">
-      <p class="font-body italic">Editor coming soon.</p>
+    <main class="flex-1 px-6 py-8 max-w-5xl mx-auto w-full">
+      <AdminGalleryEditor />
     </main>
   </div>
 </template>

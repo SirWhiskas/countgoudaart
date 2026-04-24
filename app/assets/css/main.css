@@ -15,6 +15,16 @@
   }
 }
 
+/* Quill / v-html rich text prose */
+.prose-ink p { @apply font-body text-ink-300 leading-relaxed mb-3; }
+.prose-ink strong { @apply text-ink-100 font-semibold; }
+.prose-ink em { @apply italic; }
+.prose-ink ul { @apply list-disc list-inside mb-3 text-ink-300 font-body; }
+.prose-ink ol { @apply list-decimal list-inside mb-3 text-ink-300 font-body; }
+.prose-ink h1,
+.prose-ink h2,
+.prose-ink h3 { @apply font-display text-ink-200 tracking-wide mb-2 uppercase; }
+
 /* Page transitions */
 .page-enter-active,
 .page-leave-active {
