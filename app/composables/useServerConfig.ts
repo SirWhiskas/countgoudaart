@@ -29,6 +29,7 @@ export function useServerConfig() {
     try {
       const res = await fetch(`${url.replace(/\/$/, '')}/api/refs/images`, {
         signal: AbortSignal.timeout(5000),
+        headers: { 'ngrok-skip-browser-warning': '1' },
       })
       return res.ok
     } catch {
