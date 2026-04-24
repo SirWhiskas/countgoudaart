@@ -48,5 +48,6 @@ export async function useGetImageFolder(): Promise<ImageNode[]> {
 export function useGetImagePath(image: string): string {
   const { serverUrl } = useServerConfig()
   if (!serverUrl.value) return image
-  return `${serverUrl.value}${API}/images${image}`
+  const fullUrl = `${serverUrl.value}${API}/images${image}`
+  return `/api/proxy-image?url=${encodeURIComponent(fullUrl)}`
 }
