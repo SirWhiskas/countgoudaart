@@ -58,7 +58,7 @@ const preDefinedPage = computed(() => {
         <div v-for="item in slotProps.items" :key="item.itemImageSrc">
           <div class="flex items-center gap-3 p-3">
             <div class="w-16 h-16 shrink-0 rounded overflow-hidden bg-surface-100 dark:bg-surface-800">
-              <Image :src="item.thumbnailImageSrc" :alt="item.alt" class="block w-full h-full" imageClass="w-full h-full object-cover" :pt="{ image: { loading: 'lazy', decoding: 'async' } }" preview />
+              <Image :src="item.thumbnailImageSrc" :alt="item.alt" class="block w-full h-full" imageClass="w-full h-full object-cover" :pt="{ image: { loading: 'eager', decoding: 'async' } }" preview />
             </div>
             <span class="text-sm font-medium truncate">{{ item.title }}</span>
           </div>
@@ -70,7 +70,7 @@ const preDefinedPage = computed(() => {
       <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-2 p-3">
         <div v-for="item in slotProps.items" :key="item.itemImageSrc">
           <div class="aspect-square rounded overflow-hidden bg-surface-100 dark:bg-surface-800">
-            <Image :src="item.thumbnailImageSrc" :alt="item.alt" class="block w-full h-full" imageClass="w-full h-full object-cover" :pt="{ image: { loading: 'lazy', decoding: 'async' } }" preview />
+            <Image :src="item.thumbnailImageSrc" :alt="item.alt" class="block w-full h-full" imageClass="w-full h-full object-cover" :pt="{ image: { loading: 'eager', decoding: 'async' } }" preview />
           </div>
           <p class="text-xs text-surface-400 truncate mt-1 px-0.5">{{ item.title }}</p>
         </div>
