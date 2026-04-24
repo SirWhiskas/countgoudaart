@@ -4,7 +4,7 @@ useHead({ title: 'Work — Count Gouda' })
 // Drop your images into /public/art/ and list them here.
 // Each entry: { src, alt, title (optional) }
 const pieces = [
-  // { src: '/art/piece-01.jpg', alt: 'Figure study in charcoal', title: 'Untitled I' },
+  // { src: '/art/gallery/piece-01.jpg', alt: 'Figure study in charcoal', title: 'Untitled I' },
 ]
 </script>
 
