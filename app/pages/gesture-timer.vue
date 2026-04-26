@@ -294,7 +294,7 @@ onMounted(async () => {
           <LotteryTiles :images="imagesForTiles" />
           <Button icon="pi pi-arrow-left" label="Back to main site" size="small" text severity="secondary" @click="navigateTo('/')" />
         </div>
-        <Button icon="pi pi-ellipsis-v" text rounded size="small" class="md:hidden" aria-label="More actions" @click="actionDrawerVisible = true" />
+        <Button icon="pi pi-ellipsis-v" text rounded size="small" class="md:!hidden" aria-label="More actions" @click="actionDrawerVisible = true" />
       </div>
     </header>
 
@@ -320,7 +320,7 @@ onMounted(async () => {
           fluid
           @click="() => { actionDrawerVisible = false; openConnectDialog() }"
         />
-        <LotteryTiles :images="imagesForTiles" />
+        <LotteryTiles :images="imagesForTiles" :show-label="true" />
       </div>
       <template #footer>
         <Button icon="pi pi-arrow-left" label="Back to main site" text severity="secondary" fluid @click="navigateTo('/')" />

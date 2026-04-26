@@ -14,7 +14,7 @@ interface GalleryImage {
   title?: string
 }
 
-const props = defineProps<{ images: GalleryImage[] }>()
+const props = defineProps<{ images: GalleryImage[], showLabel?: Boolean }>()
 
 const amount = ref(5)
 const randomImages = ref<GalleryImage[]>([])
@@ -35,10 +35,12 @@ const getRandomImages = () => {
 
 <template>
   <Button
-    icon="pi pi-shuffle"
+    icon="pi pi-sparkles"
     text
     rounded
+    :label="showLabel ? 'Get Random Images' : ''"
     size="small"
+    title="Display random set of images"
     aria-label="Random image lottery"
     :disabled="images.length === 0"
     @click="getRandomImages()"
