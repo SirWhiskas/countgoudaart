@@ -4,7 +4,13 @@ import { useServerConfig } from './useServerConfig'
 // The reference-library backend serves images from a local folder via /api/refs/*.
 
 const API = '/api/refs'
-const NGROK_HEADERS = { 'ngrok-skip-browser-warning': '1' }
+
+function buildHeaders(): Record<string, string> {
+  const { apiKey } = useServerConfig()
+  const headers: Record<string, string> = { 'ngrok-skip-browser-warning': '1' }
+  if (apiKey.value) headers['x-api-key'] = apiKey.value
+  return headers
+}
 
 export interface ImageNode {
   key: string
@@ -25,7 +31,7 @@ export async function useGetImageData(): Promise<ImageNode[]> {
   const { serverUrl } = useServerConfig()
   if (!serverUrl.value) return []
   try {
-    const res = await fetch(`${serverUrl.value}${API}/images`, { headers: NGROK_HEADERS })
+    const res = await fetch(`${serverUrl.value}${API}/images`, { headers: buildHeaders() })
     if (!res.ok) return []
     return await res.json()
   } catch {
@@ -37,7 +43,7 @@ export async function useGetImageFolder(): Promise<ImageNode[]> {
   const { serverUrl } = useServerConfig()
   if (!serverUrl.value) return []
   try {
-    const res = await fetch(`${serverUrl.value}${API}/folders`, { headers: NGROK_HEADERS })
+    const res = await fetch(`${serverUrl.value}${API}/folders`, { headers: buildHeaders() })
     if (!res.ok) return []
     return await res.json()
   } catch {

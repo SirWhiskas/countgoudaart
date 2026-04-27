@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, useTemplateRef } from 'vue'
+import { useServerConfig } from '~/composables/useServerConfig'
 import Drawer from 'primevue/drawer'
 import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
@@ -107,14 +108,16 @@ const handleTimerToastEnd = () => {
 }
 
 // ── RefServer connection ─────────────────────────────────────────────────────
-const { serverUrl, setServerUrl, testConnection } = useServerConfig()
+const { serverUrl, apiKey, setServerUrl, setApiKey, testConnection } = useServerConfig()
 const connectDialogVisible = ref(false)
 const pendingUrl = ref('')
+const pendingApiKey = ref('')
 const connectionTesting = ref(false)
 const connectionResult = ref<'ok' | 'fail' | null>(null)
 
 const openConnectDialog = () => {
   pendingUrl.value = serverUrl.value ?? ''
+  pendingApiKey.value = apiKey.value ?? ''
   connectionResult.value = null
   connectDialogVisible.value = true
 }
@@ -122,11 +125,12 @@ const openConnectDialog = () => {
 const handleConnect = async () => {
   connectionTesting.value = true
   connectionResult.value = null
-  const ok = await testConnection(pendingUrl.value)
+  const ok = await testConnection(pendingUrl.value, pendingApiKey.value)
   connectionResult.value = ok ? 'ok' : 'fail'
   connectionTesting.value = false
   if (ok) {
     setServerUrl(pendingUrl.value)
+    setApiKey(pendingApiKey.value)
     connectDialogVisible.value = false
     images.value = await useGetImageData()
   }
@@ -134,6 +138,7 @@ const handleConnect = async () => {
 
 const handleDisconnect = () => {
   setServerUrl(null)
+  setApiKey(null)
   images.value = []
   connectDialogVisible.value = false
 }
@@ -166,6 +171,15 @@ onMounted(async () => {
           <InputText
             v-model="pendingUrl"
             placeholder="http://xxx.xxx.x.xxx:3001"
+            class="w-full"
+            @keyup.enter="handleConnect"
+          />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-sm font-medium">API Key</label>
+          <InputText
+            v-model="pendingApiKey"
+            placeholder="Optional"
             class="w-full"
             @keyup.enter="handleConnect"
           />
