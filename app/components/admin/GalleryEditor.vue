@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { ref, reactive, computed, onMounted, watch } from 'vue';
+
 import Select from 'primevue/select'
+import MultiSelect from 'primevue/multiselect'
 import InputText from 'primevue/inputtext'
 import InputNumber from 'primevue/inputnumber'
 import Textarea from 'primevue/textarea'
@@ -15,6 +18,7 @@ interface ArtPiece {
   artDimensions: { height: number | null; width: number | null }
   artMedium: string
   artDescription: string
+  categories: string[]
 }
 
 const toast = useToast()
@@ -22,6 +26,8 @@ const pieces = ref<ArtPiece[]>([])
 const selectedIdx = ref<number | null>(null)
 const scanning = ref(false)
 const saving = ref(false)
+const extraCategories = ref<string[]>([])
+const newCategoryInput = ref('')
 
 const form = reactive<ArtPiece>({
   imgTitle: '',
@@ -30,6 +36,7 @@ const form = reactive<ArtPiece>({
   artDimensions: { height: null, width: null },
   artMedium: '',
   artDescription: '',
+  categories: [],
 })
 
 const dropdownOptions = computed(() =>
@@ -38,6 +45,23 @@ const dropdownOptions = computed(() =>
     value: i,
   }))
 )
+
+const allCategories = computed(() => {
+  const set = new Set<string>()
+  for (const p of pieces.value) {
+    for (const c of (p.categories ?? [])) set.add(c)
+  }
+  for (const c of extraCategories.value) set.add(c)
+  return [...set].sort()
+})
+
+const addCategory = () => {
+  const cat = newCategoryInput.value.trim()
+  if (!cat) return
+  if (!allCategories.value.includes(cat)) extraCategories.value.push(cat)
+  if (!form.categories.includes(cat)) form.categories.push(cat)
+  newCategoryInput.value = ''
+}
 
 watch(selectedIdx, (idx) => {
   if (idx === null) return
@@ -49,6 +73,7 @@ watch(selectedIdx, (idx) => {
   form.artDimensions = { ...piece.artDimensions }
   form.artMedium = piece.artMedium
   form.artDescription = piece.artDescription
+  form.categories = [...(piece.categories ?? [])]
 })
 
 const loadData = async () => {
@@ -71,6 +96,7 @@ const scanImages = async () => {
       artDimensions: { height: null, width: null },
       artMedium: '',
       artDescription: '',
+      categories: [],
     })
     toast.add({ severity: 'success', summary: 'Scan complete', detail: `Found ${paths.length} images`, life: 3000 })
   } catch {
@@ -89,6 +115,7 @@ const saveEntry = async () => {
     artDimensions: { ...form.artDimensions },
     artMedium: form.artMedium,
     artDescription: form.artDescription,
+    categories: [...form.categories],
   }
   saving.value = true
   try {
@@ -173,6 +200,26 @@ onMounted(loadData)
           <div>
             <label class="block font-display text-xs tracking-[0.2em] uppercase text-ink-500 mb-1">Medium</label>
             <Textarea v-model="form.artMedium" class="w-full" :rows="2" auto-resize placeholder="e.g. Charcoal on newsprint" />
+          </div>
+
+          <div>
+            <label class="block font-display text-xs tracking-[0.2em] uppercase text-ink-500 mb-1">Categories</label>
+            <MultiSelect
+              v-model="form.categories"
+              :options="allCategories"
+              placeholder="Select categories…"
+              display="chip"
+              class="w-full"
+            />
+            <div class="flex gap-2 mt-2">
+              <InputText
+                v-model="newCategoryInput"
+                class="flex-1"
+                placeholder="New category…"
+                @keydown.enter.prevent="addCategory"
+              />
+              <Button icon="pi pi-plus" severity="secondary" size="small" @click="addCategory" />
+            </div>
           </div>
 
           <div>

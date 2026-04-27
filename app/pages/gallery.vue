@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ref, computed } from 'vue'
+
 useHead({ title: 'Work — Count Gouda' })
 
 interface ArtPiece {
@@ -8,6 +10,7 @@ interface ArtPiece {
   artDimensions: { height: number | null; width: number | null }
   artMedium: string
   artDescription: string
+  categories?: string[]
 }
 
 const { data: pieces } = useFetch<ArtPiece[]>('/data/gallery.json', {
@@ -17,6 +20,20 @@ const { data: pieces } = useFetch<ArtPiece[]>('/data/gallery.json', {
 
 const selected = ref<ArtPiece | null>(null)
 const enlarged = ref(false)
+const activeCategory = ref<string | null>(null)
+
+const allCategories = computed(() => {
+  const set = new Set<string>()
+  for (const p of pieces.value ?? []) {
+    for (const c of (p.categories ?? [])) set.add(c)
+  }
+  return [...set].sort()
+})
+
+const filteredPieces = computed(() => {
+  if (!activeCategory.value) return pieces.value ?? []
+  return (pieces.value ?? []).filter((p: ArtPiece) => p.categories?.includes(activeCategory.value!))
+})
 
 const dimensionLabel = (piece: ArtPiece) => {
   const { width, height } = piece.artDimensions
@@ -38,17 +55,42 @@ onUnmounted(() => window.removeEventListener('keydown', onKeydown))
 
 <template>
   <div class="pt-12 pb-20 px-6 md:px-12 max-w-6xl mx-auto">
-    <h2 class="font-display text-xs tracking-[0.35em] uppercase text-ink-400 mb-16">Work</h2>
+    <h2 class="font-display text-xs tracking-[0.35em] uppercase text-ink-400 mb-10">Work</h2>
+
+    <!-- Category filter -->
+    <div v-if="allCategories.length > 0" class="flex flex-wrap gap-2 mb-12">
+      <button
+        class="font-display text-xs tracking-[0.2em] uppercase px-4 py-1.5 border transition-colors duration-200"
+        :class="activeCategory === null
+          ? 'border-ink-100 text-ink-100'
+          : 'border-ink-700 text-ink-500 hover:border-ink-400 hover:text-ink-300'"
+        @click="activeCategory = null"
+      >All</button>
+      <button
+        v-for="cat in allCategories"
+        :key="cat"
+        class="font-display text-xs tracking-[0.2em] uppercase px-4 py-1.5 border transition-colors duration-200"
+        :class="activeCategory === cat
+          ? 'border-ink-100 text-ink-100'
+          : 'border-ink-700 text-ink-500 hover:border-ink-400 hover:text-ink-300'"
+        @click="activeCategory = cat"
+      >{{ cat }}</button>
+    </div>
 
     <!-- Empty state -->
     <div v-if="!pieces?.length" class="flex flex-col items-center justify-center py-40 gap-4 text-ink-600">
       <p class="font-body italic text-xl">Images coming soon.</p>
     </div>
 
+    <!-- No matches for active filter -->
+    <div v-else-if="filteredPieces.length === 0" class="flex flex-col items-center justify-center py-40 gap-4 text-ink-600">
+      <p class="font-body italic text-xl">No pieces in this category yet.</p>
+    </div>
+
     <!-- Masonry gallery -->
     <div v-else class="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
       <div
-        v-for="piece in pieces"
+        v-for="piece in filteredPieces"
         :key="piece.imgSrc"
         class="break-inside-avoid group relative overflow-hidden cursor-pointer"
         @click="selected = piece"

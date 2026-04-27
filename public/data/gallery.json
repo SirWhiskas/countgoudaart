@@ -8,7 +8,8 @@
       "width": 18
     },
     "artMedium": "Charcoal on newsprint",
-    "artDescription": ""
+    "artDescription": "",
+    "categories": ["Featured"]
   },
   {
     "imgTitle": "piece-02",
@@ -19,7 +20,8 @@
       "width": 18
     },
     "artMedium": "Charcoal on newsprint",
-    "artDescription": ""
+    "artDescription": "",
+    "categories": ["Featured"]
   },
   {
     "imgTitle": "piece-03",
@@ -30,7 +32,8 @@
       "width": 18
     },
     "artMedium": "Charcoal on newsprint",
-    "artDescription": ""
+    "artDescription": "",
+    "categories": ["Featured"]
   },
   {
     "imgTitle": "piece-04",
@@ -41,7 +44,8 @@
       "width": 18
     },
     "artMedium": "Charcoal on newsprint",
-    "artDescription": ""
+    "artDescription": "",
+    "categories": ["Featured"]
   },
   {
     "imgTitle": "piece-05",
@@ -52,7 +56,8 @@
       "width": 12
     },
     "artMedium": "Charcoal on newsprint",
-    "artDescription": ""
+    "artDescription": "",
+    "categories": ["Featured"]
   },
   {
     "imgTitle": "piece-06",
@@ -63,7 +68,8 @@
       "width": 18
     },
     "artMedium": "Charcoal on newsprint",
-    "artDescription": ""
+    "artDescription": "",
+    "categories": ["Featured"]
   },
   {
     "imgTitle": "piece-07",
@@ -74,7 +80,8 @@
       "width": 18
     },
     "artMedium": "Charcoal on newsprint",
-    "artDescription": ""
+    "artDescription": "",
+    "categories": ["Featured"]
   },
   {
     "imgTitle": "piece-08",
@@ -85,7 +92,8 @@
       "width": 18
     },
     "artMedium": "Charcoal on newsprint",
-    "artDescription": ""
+    "artDescription": "",
+    "categories": ["Featured"]
   },
   {
     "imgTitle": "piece-09",
@@ -96,7 +104,8 @@
       "width": 18
     },
     "artMedium": "Charcoal on newsprint",
-    "artDescription": ""
+    "artDescription": "",
+    "categories": ["Featured"]
   },
   {
     "imgTitle": "piece-10",
@@ -107,6 +116,7 @@
       "width": 12
     },
     "artMedium": "Charcoal on newsprint",
-    "artDescription": ""
+    "artDescription": "",
+    "categories": ["Featured"]
   }
 ]
