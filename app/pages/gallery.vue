@@ -55,7 +55,17 @@ onUnmounted(() => window.removeEventListener('keydown', onKeydown))
 
 <template>
   <div class="pt-12 pb-20 px-6 md:px-12 max-w-6xl mx-auto">
-    <h2 class="font-display text-xs tracking-[0.35em] uppercase text-ink-400 mb-10">Work</h2>
+    <div class="flex items-center justify-between mb-10">
+      <h2 class="font-display text-xs tracking-[0.35em] uppercase text-ink-400">Work</h2>
+      <a
+        href="https://fineartamerica.com/profiles/count-gouda/shop"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="font-display text-xs tracking-[0.3em] uppercase border border-ink-700 text-ink-500 px-4 py-2 hover:border-ink-400 hover:text-ink-300 transition-colors duration-300"
+      >
+        Shop Prints
+      </a>
+    </div>
 
     <!-- Category filter -->
     <div v-if="allCategories.length > 0" class="flex flex-wrap gap-2 mb-12">
