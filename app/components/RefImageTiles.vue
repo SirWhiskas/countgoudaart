@@ -19,7 +19,7 @@ const emit = defineEmits(['quickWarmUp'])
 const layout = ref<'list' | 'grid'>('grid')
 const options = ref(['list', 'grid'])
 const pageNumberOverride = ref(0)
-const numberOfDisplayRows = ref(5)
+const numberOfDisplayRows = ref(12)
 
 const preDefinedPage = computed(() => {
   const offset = pageNumberOverride.value - 1
