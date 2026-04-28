@@ -26,12 +26,22 @@ useHead({ title: 'Count Gouda — Fantasy Figure Drawing' })
       <h1 class="font-display text-5xl md:text-7xl text-white tracking-widest uppercase leading-none mb-6">
         Count<br />Gouda
       </h1>
-      <NuxtLink
-        to="/gallery"
-        class="inline-block font-display text-xs tracking-[0.3em] uppercase border border-ink-400 text-ink-200 px-6 py-3 hover:border-white hover:text-white transition-colors duration-300"
-      >
-        View Work
-      </NuxtLink>
+      <div class="flex flex-wrap items-center gap-4">
+        <NuxtLink
+          to="/gallery"
+          class="inline-block font-display text-xs tracking-[0.3em] uppercase border border-ink-400 text-ink-200 px-6 py-3 hover:border-white hover:text-white transition-colors duration-300"
+        >
+          View Work
+        </NuxtLink>
+        <a
+          href="https://fineartamerica.com/profiles/count-gouda/shop"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-block font-display text-xs tracking-[0.3em] uppercase border border-ink-400 text-ink-200 px-6 py-3 hover:border-white hover:text-white transition-colors duration-300"
+        >
+          Shop Prints
+        </a>
+      </div>
     </div>
 
   </section>
