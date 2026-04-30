@@ -14,7 +14,10 @@ interface GalleryImage {
 }
 
 defineProps<{ images: GalleryImage[] }>()
-const emit = defineEmits(['quickWarmUp'])
+const emit = defineEmits<{
+  quickWarmUp: []
+  saveImage: [src: string]
+}>()
 
 const layout = ref<'list' | 'grid'>('grid')
 const options = ref(['list', 'grid'])
@@ -60,7 +63,16 @@ const preDefinedPage = computed(() => {
             <div class="w-16 h-16 shrink-0 rounded overflow-hidden bg-surface-100 dark:bg-surface-800">
               <Image :src="item.thumbnailImageSrc" :alt="item.alt" class="block w-full h-full" imageClass="w-full h-full object-cover" :pt="{ image: { loading: 'eager', decoding: 'async' } }" preview />
             </div>
-            <span class="text-sm font-medium truncate">{{ item.title }}</span>
+            <span class="text-sm font-medium truncate flex-1">{{ item.title }}</span>
+            <Button
+              icon="pi pi-bookmark"
+              text
+              rounded
+              size="small"
+              severity="secondary"
+              aria-label="Save to collection"
+              @click.stop="emit('saveImage', item.itemImageSrc)"
+            />
           </div>
         </div>
       </div>
@@ -68,10 +80,17 @@ const preDefinedPage = computed(() => {
 
     <template #grid="slotProps">
       <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-2 p-3">
-        <div v-for="item in slotProps.items" :key="item.itemImageSrc">
+        <div v-for="item in slotProps.items" :key="item.itemImageSrc" class="group relative">
           <div class="aspect-square rounded overflow-hidden bg-surface-100 dark:bg-surface-800">
             <Image :src="item.thumbnailImageSrc" :alt="item.alt" class="block w-full h-full" imageClass="w-full h-full object-cover" :pt="{ image: { loading: 'eager', decoding: 'async' } }" preview />
           </div>
+          <button
+            class="absolute top-1 right-1 p-1 rounded bg-surface-900/60 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-150 hover:bg-surface-900/90"
+            aria-label="Save to collection"
+            @click.stop="emit('saveImage', item.itemImageSrc)"
+          >
+            <i class="pi pi-bookmark text-xs" />
+          </button>
           <p class="text-xs text-surface-400 truncate mt-1 px-0.5">{{ item.title }}</p>
         </div>
       </div>

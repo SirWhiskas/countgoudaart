@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import { ref, onMounted, useTemplateRef } from 'vue'
 import { useServerConfig } from '~/composables/useServerConfig'
+import { useCollections } from '~/composables/useCollections'
 import Drawer from 'primevue/drawer'
 import Dialog from 'primevue/dialog'
+import Accordion from 'primevue/accordion'
+import AccordionPanel from 'primevue/accordionpanel'
+import AccordionHeader from 'primevue/accordionheader'
+import AccordionContent from 'primevue/accordioncontent'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import Toast from 'primevue/toast'
@@ -107,6 +112,38 @@ const handleTimerToastEnd = () => {
   }
 }
 
+// ── Collections ─────────────────────────────────────────────────────────────
+const { collectionsAsTree } = useCollections()
+const saveDialogVisible = ref(false)
+const savingImageSrc = ref<string | null>(null)
+
+const handleSaveImage = (src: string) => {
+  savingImageSrc.value = src
+  saveDialogVisible.value = true
+}
+
+const handleCollectionSelect = (node: { label: string; path: string; children?: unknown[] }) => {
+  selectedFolderName.value = node.label
+  sidebarVisible.value = false
+
+  if (node.children) {
+    imagesForTiles.value = (node.children as { path: string; label: string }[]).map(child => ({
+      itemImageSrc: child.path,
+      thumbnailImageSrc: child.path,
+      alt: child.label,
+      title: child.label,
+    }))
+  } else {
+    imageGallery.value = [{
+      itemImageSrc: node.path,
+      thumbnailImageSrc: node.path,
+      alt: node.label,
+      title: node.label,
+    }]
+    galleryComponent.value?.showGallery()
+  }
+}
+
 // ── RefServer connection ─────────────────────────────────────────────────────
 const { serverUrl, apiKey, setServerUrl, setApiKey, testConnection } = useServerConfig()
 const connectDialogVisible = ref(false)
@@ -205,6 +242,7 @@ onMounted(async () => {
       </template>
     </Dialog>
     <RefImageGallery ref="image-gallery" :image-gallery="imageGallery" @on-gallery-end="handleGalleryEnd" />
+    <SaveToCollectionDialog v-model:visible="saveDialogVisible" :image-src="savingImageSrc" />
 
     <!-- App header -->
     <header class="flex items-center gap-2 px-3 py-2 bg-surface-0 dark:bg-surface-950 border-b border-surface-200 dark:border-surface-700 shrink-0 z-10 shadow-sm">
@@ -282,11 +320,30 @@ onMounted(async () => {
 
       <!-- Desktop sidebar -->
       <nav class="hidden lg:flex flex-col w-72 xl:w-80 shrink-0 border-r border-surface-200 dark:border-surface-700 overflow-y-auto bg-surface-0 dark:bg-surface-950">
-        <div class="flex items-center gap-2 px-3 py-3 border-b border-surface-100 dark:border-surface-800 sticky top-0 bg-surface-0 dark:bg-surface-950 z-10">
-          <i class="pi pi-folder text-primary-400" />
-          <span class="font-medium text-sm text-surface-600 dark:text-surface-400 uppercase tracking-wide">Folders</span>
-        </div>
-        <FolderTree :file-data="images" @node-select="handleFileSelect" />
+        <Accordion :value="['folders']" multiple>
+          <AccordionPanel value="folders">
+            <AccordionHeader>
+              <div class="flex items-center gap-2">
+                <i class="pi pi-folder text-primary-400" />
+                <span class="font-medium text-sm uppercase tracking-wide">Folders</span>
+              </div>
+            </AccordionHeader>
+            <AccordionContent>
+              <FolderTree :file-data="images" @node-select="handleFileSelect" />
+            </AccordionContent>
+          </AccordionPanel>
+          <AccordionPanel value="collections">
+            <AccordionHeader>
+              <div class="flex items-center gap-2">
+                <i class="pi pi-bookmark text-primary-400" />
+                <span class="font-medium text-sm uppercase tracking-wide">Collections</span>
+              </div>
+            </AccordionHeader>
+            <AccordionContent>
+              <FolderTree :file-data="collectionsAsTree" @node-select="handleCollectionSelect" />
+            </AccordionContent>
+          </AccordionPanel>
+        </Accordion>
       </nav>
 
       <!-- Mobile drawer -->
@@ -297,7 +354,30 @@ onMounted(async () => {
             <span class="font-semibold">Gesture Timer</span>
           </div>
         </template>
-        <FolderTree :file-data="images" @node-select="handleFileSelect" />
+        <Accordion :value="['folders']" multiple>
+          <AccordionPanel value="folders">
+            <AccordionHeader>
+              <div class="flex items-center gap-2">
+                <i class="pi pi-folder text-primary-400" />
+                <span class="font-medium text-sm uppercase tracking-wide">Folders</span>
+              </div>
+            </AccordionHeader>
+            <AccordionContent>
+              <FolderTree :file-data="images" @node-select="handleFileSelect" />
+            </AccordionContent>
+          </AccordionPanel>
+          <AccordionPanel value="collections">
+            <AccordionHeader>
+              <div class="flex items-center gap-2">
+                <i class="pi pi-bookmark text-primary-400" />
+                <span class="font-medium text-sm uppercase tracking-wide">Collections</span>
+              </div>
+            </AccordionHeader>
+            <AccordionContent>
+              <FolderTree :file-data="collectionsAsTree" @node-select="handleCollectionSelect" />
+            </AccordionContent>
+          </AccordionPanel>
+        </Accordion>
       </Drawer>
 
       <!-- Image content area -->
@@ -319,7 +399,7 @@ onMounted(async () => {
             Your browser doesn't support folder access. Try Chrome or Edge.
           </p>
         </div>
-        <RefImageTiles v-else :images="imagesForTiles" @quick-warm-up="handleQuickWarmUp" />
+        <RefImageTiles v-else :images="imagesForTiles" @quick-warm-up="handleQuickWarmUp" @save-image="handleSaveImage" />
       </main>
 
     </div>
