@@ -145,6 +145,8 @@ const handleCollectionSelect = (node: { label: string; path: string; children?: 
 }
 
 // ── RefServer connection ─────────────────────────────────────────────────────
+const helpDialogVisible = ref(false)
+
 const { serverUrl, apiKey, setServerUrl, setApiKey, testConnection } = useServerConfig()
 const connectDialogVisible = ref(false)
 const pendingUrl = ref('')
@@ -194,14 +196,14 @@ onMounted(async () => {
       <template #header>
         <div class="flex items-center gap-2">
           <i class="pi pi-wifi text-primary-400" />
-          <span class="font-bold">Connect to RefServer</span>
+          <span class="font-bold">Connect to Image Server</span>
         </div>
       </template>
 
       <div class="flex flex-col gap-4">
         <p class="text-sm text-surface-500 dark:text-surface-400">
-          Enter your PC's local IP and the port RefServer is running on.
-          Make sure you're on the same network.
+          Connect to any HTTP image library that lists directories and images.
+          Enter the server URL and an optional API key.
         </p>
         <div class="flex flex-col gap-1">
           <label class="text-sm font-medium">Server URL</label>
@@ -243,6 +245,7 @@ onMounted(async () => {
     </Dialog>
     <RefImageGallery ref="image-gallery" :image-gallery="imageGallery" @on-gallery-end="handleGalleryEnd" />
     <SaveToCollectionDialog v-model:visible="saveDialogVisible" :image-src="savingImageSrc" />
+    <GestureTimerHelp v-model:visible="helpDialogVisible" />
 
     <!-- App header -->
     <header class="flex items-center gap-2 px-3 py-2 bg-surface-0 dark:bg-surface-950 border-b border-surface-200 dark:border-surface-700 shrink-0 z-10 shadow-sm">
@@ -281,6 +284,7 @@ onMounted(async () => {
           />
           <LotteryTiles :images="imagesForTiles" />
           <Button icon="pi pi-arrow-left" label="Back to main site" size="small" text severity="secondary" @click="navigateTo('/')" />
+          <Button icon="pi pi-question-circle" size="small" text rounded severity="secondary" aria-label="Help" @click="helpDialogVisible = true" />
         </div>
         <Button icon="pi pi-ellipsis-v" text rounded size="small" class="md:!hidden" aria-label="More actions" @click="actionDrawerVisible = true" />
       </div>
@@ -303,7 +307,7 @@ onMounted(async () => {
         />
         <Button
           :icon="serverUrl ? 'pi pi-wifi' : 'pi pi-wifi'"
-          :label="serverUrl ? 'RefServer: Connected' : 'Connect RefServer'"
+          :label="serverUrl ? 'Server: Connected' : 'Connect Image Server'"
           :severity="serverUrl ? 'success' : 'secondary'"
           fluid
           @click="() => { actionDrawerVisible = false; openConnectDialog() }"
@@ -311,7 +315,10 @@ onMounted(async () => {
         <LotteryTiles :images="imagesForTiles" :show-label="true" />
       </div>
       <template #footer>
-        <Button icon="pi pi-arrow-left" label="Back to main site" text severity="secondary" fluid @click="navigateTo('/')" />
+        <div class="flex flex-col gap-2">
+          <Button icon="pi pi-question-circle" label="Help" severity="secondary" fluid @click="() => { actionDrawerVisible = false; helpDialogVisible = true }" />
+          <Button icon="pi pi-arrow-left" label="Back to main site" text severity="secondary" fluid @click="navigateTo('/')" />
+        </div>
       </template>
     </Drawer>
 
