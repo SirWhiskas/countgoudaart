@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@nuxt/image',
     '@vercel/analytics',
+    '@vercel/speed-insights',
   ],
 
   css: ['~/assets/css/main.css', 'primeicons/primeicons.css'],
