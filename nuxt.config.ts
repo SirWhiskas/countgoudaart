@@ -6,6 +6,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss',
     '@nuxt/image',
+    '@vercel/analytics',
   ],
 
   css: ['~/assets/css/main.css', 'primeicons/primeicons.css'],
