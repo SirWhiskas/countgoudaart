@@ -1,7 +1,7 @@
 [
   {
     "imgTitle": "piece-01",
-    "imgSrc": "/art/gallery/piece-01.JPEG",
+    "imgSrc": "/art/gallery/piece-01.webp",
     "artTitle": "Hallowed Transformation",
     "artDimensions": {
       "height": 12,
@@ -13,7 +13,7 @@
   },
   {
     "imgTitle": "piece-02",
-    "imgSrc": "/art/gallery/piece-02.JPEG",
+    "imgSrc": "/art/gallery/piece-02.webp",
     "artTitle": "The Wildling",
     "artDimensions": {
       "height": 12,
@@ -25,7 +25,7 @@
   },
   {
     "imgTitle": "piece-03",
-    "imgSrc": "/art/gallery/piece-03.JPEG",
+    "imgSrc": "/art/gallery/piece-03.webp",
     "artTitle": "The Dancer",
     "artDimensions": {
       "height": 24,
@@ -37,7 +37,7 @@
   },
   {
     "imgTitle": "piece-04",
-    "imgSrc": "/art/gallery/piece-04.JPEG",
+    "imgSrc": "/art/gallery/piece-04.webp",
     "artTitle": "Caught",
     "artDimensions": {
       "height": 24,
@@ -49,7 +49,7 @@
   },
   {
     "imgTitle": "piece-05",
-    "imgSrc": "/art/gallery/piece-05.JPEG",
+    "imgSrc": "/art/gallery/piece-05.webp",
     "artTitle": "Serpent's Tale Part I",
     "artDimensions": {
       "height": 18,
@@ -61,7 +61,7 @@
   },
   {
     "imgTitle": "piece-06",
-    "imgSrc": "/art/gallery/piece-06.JPEG",
+    "imgSrc": "/art/gallery/piece-06.webp",
     "artTitle": "Serpent's Tale Part II",
     "artDimensions": {
       "height": 24,
@@ -73,7 +73,7 @@
   },
   {
     "imgTitle": "piece-07",
-    "imgSrc": "/art/gallery/piece-07.JPEG",
+    "imgSrc": "/art/gallery/piece-07.webp",
     "artTitle": "Fantasy Study",
     "artDimensions": {
       "height": 12,
@@ -85,7 +85,7 @@
   },
   {
     "imgTitle": "piece-08",
-    "imgSrc": "/art/gallery/piece-08.JPEG",
+    "imgSrc": "/art/gallery/piece-08.webp",
     "artTitle": "Bloom",
     "artDimensions": {
       "height": 12,
@@ -97,7 +97,7 @@
   },
   {
     "imgTitle": "piece-09",
-    "imgSrc": "/art/gallery/piece-09.JPEG",
+    "imgSrc": "/art/gallery/piece-09.webp",
     "artTitle": "The Mourner",
     "artDimensions": {
       "height": 12,
@@ -109,7 +109,7 @@
   },
   {
     "imgTitle": "piece-10",
-    "imgSrc": "/art/gallery/piece-10.JPEG",
+    "imgSrc": "/art/gallery/piece-10.webp",
     "artTitle": "Gestural Dance",
     "artDimensions": {
       "height": 18,

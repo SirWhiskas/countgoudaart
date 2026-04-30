@@ -9,7 +9,7 @@ useHead({ title: 'Count Gouda — Fantasy Figure Drawing' })
     <!-- Hero image — replace src with your first piece -->
     <div class="absolute inset-0">
       <img
-        :src="'/art/hero.JPEG'"
+        :src="'/art/hero.webp'"
         alt="Hero artwork by Count Gouda"
         class="w-full h-full object-cover object-center"
       />
