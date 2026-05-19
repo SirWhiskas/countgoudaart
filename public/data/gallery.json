@@ -9,7 +9,9 @@
     },
     "artMedium": "Charcoal on newsprint",
     "artDescription": "",
-    "categories": ["Featured"]
+    "categories": [
+      "Featured"
+    ]
   },
   {
     "imgTitle": "piece-02",
@@ -21,7 +23,9 @@
     },
     "artMedium": "Charcoal on newsprint",
     "artDescription": "",
-    "categories": ["Featured"]
+    "categories": [
+      "Featured"
+    ]
   },
   {
     "imgTitle": "piece-03",
@@ -33,7 +37,9 @@
     },
     "artMedium": "Charcoal on newsprint",
     "artDescription": "",
-    "categories": ["Featured"]
+    "categories": [
+      "Featured"
+    ]
   },
   {
     "imgTitle": "piece-04",
@@ -45,7 +51,9 @@
     },
     "artMedium": "Charcoal on newsprint",
     "artDescription": "",
-    "categories": ["Featured"]
+    "categories": [
+      "Featured"
+    ]
   },
   {
     "imgTitle": "piece-05",
@@ -57,7 +65,9 @@
     },
     "artMedium": "Charcoal on newsprint",
     "artDescription": "",
-    "categories": ["Featured"]
+    "categories": [
+      "Featured"
+    ]
   },
   {
     "imgTitle": "piece-06",
@@ -69,7 +79,9 @@
     },
     "artMedium": "Charcoal on newsprint",
     "artDescription": "",
-    "categories": ["Featured"]
+    "categories": [
+      "Featured"
+    ]
   },
   {
     "imgTitle": "piece-07",
@@ -81,7 +93,9 @@
     },
     "artMedium": "Charcoal on newsprint",
     "artDescription": "",
-    "categories": ["Featured"]
+    "categories": [
+      "Featured"
+    ]
   },
   {
     "imgTitle": "piece-08",
@@ -93,7 +107,9 @@
     },
     "artMedium": "Charcoal on newsprint",
     "artDescription": "",
-    "categories": ["Featured"]
+    "categories": [
+      "Featured"
+    ]
   },
   {
     "imgTitle": "piece-09",
@@ -105,7 +121,9 @@
     },
     "artMedium": "Charcoal on newsprint",
     "artDescription": "",
-    "categories": ["Featured"]
+    "categories": [
+      "Featured"
+    ]
   },
   {
     "imgTitle": "piece-10",
@@ -117,6 +135,22 @@
     },
     "artMedium": "Charcoal on newsprint",
     "artDescription": "",
-    "categories": ["Featured"]
+    "categories": [
+      "Featured"
+    ]
+  },
+  {
+    "imgTitle": "piece-11",
+    "imgSrc": "/art/gallery/piece-11.JPEG",
+    "artTitle": "Luna",
+    "artDimensions": {
+      "height": 24,
+      "width": 18
+    },
+    "artMedium": "Charcoal on newsprint",
+    "artDescription": "",
+    "categories": [
+      "Featured"
+    ]
   }
 ]
