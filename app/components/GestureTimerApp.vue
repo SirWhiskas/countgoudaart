@@ -2,6 +2,7 @@
 import { ref, onMounted, useTemplateRef } from 'vue'
 import { useServerConfig } from '~/composables/useServerConfig'
 import { useCollections } from '~/composables/useCollections'
+import PersistentMenu from './PersistentMenu.vue'
 import Drawer from 'primevue/drawer'
 import Dialog from 'primevue/dialog'
 import Accordion from 'primevue/accordion'
@@ -354,7 +355,7 @@ onMounted(async () => {
       </nav>
 
       <!-- Mobile drawer -->
-      <Drawer v-model:visible="sidebarVisible" position="left" style="width: 18rem">
+      <PersistentMenu v-model:visible="sidebarVisible">
         <template #header>
           <div class="flex items-center gap-2">
             <i class="pi pi-images text-primary-400" />
@@ -385,7 +386,7 @@ onMounted(async () => {
             </AccordionContent>
           </AccordionPanel>
         </Accordion>
-      </Drawer>
+      </PersistentMenu>
 
       <!-- Image content area -->
       <main class="flex-1 overflow-y-auto">
