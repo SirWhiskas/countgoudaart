@@ -16,9 +16,11 @@ import { useToast } from 'primevue/usetoast'
 import {
   type ImageNode,
   type GalleryImage,
+  type SessionRound,
   shuffleArray,
   resolveNodeSelection,
   pickWarmUpImages,
+  buildSessionQueue,
 } from '~/utils/gestureTimerUtils'
 
 const toast = useToast()
@@ -27,7 +29,8 @@ const images = ref<ImageNode[]>([])
 const imageGallery = ref<GalleryImage[]>([])
 const imagesForTiles = ref<GalleryImage[]>([])
 const timerValue = ref(120)
-const hasCompletedWarmUp = ref(false)
+const isOnLastImage = ref(false)
+const isSessionActive = ref(false)
 const sidebarVisible = ref(false)
 const actionDrawerVisible = ref(false)
 const selectedFolderName = ref('')
@@ -37,6 +40,7 @@ const localFolderLoading = ref(false)
 const openLocalFolder = async () => {
   localFolderLoading.value = true
   try {
+    revokeAllBlobUrls()
     const { name, images: localImages } = await useOpenLocalFolder()
     imagesForTiles.value = localImages
     selectedFolderName.value = name
@@ -49,8 +53,14 @@ const openLocalFolder = async () => {
   }
 }
 
-const galleryComponent = useTemplateRef<{ showGallery: () => void; hideGallery: () => void; goToNextImage: () => void }>('image-gallery')
-const gestureTimerComponent = useTemplateRef<{ startTimer: () => void; stopTimer: () => void }>('gesture-timer')
+const galleryComponent = useTemplateRef<{ showGallery: () => void; hideGallery: () => void; goToNextImage: () => void; activeIndex: number }>('image-gallery')
+const gestureTimerComponent = useTemplateRef<{ startTimer: (overrideSeconds?: number) => void; stopTimer: () => void }>('gesture-timer')
+const startSessionComponent = useTemplateRef<{ openDialog: () => void }>('start-session')
+
+const currentImageDuration = () => {
+  const idx = galleryComponent.value?.activeIndex ?? 0
+  return imageGallery.value[idx]?.durationSeconds
+}
 
 const handleFileSelect = (node: ImageNode) => {
   selectedFolderName.value = node.label
@@ -66,7 +76,8 @@ const handleFileSelect = (node: ImageNode) => {
 }
 
 const handleWarmUpStart = (folderNodes: ImageNode[]) => {
-  hasCompletedWarmUp.value = false
+  isOnLastImage.value = false
+  isSessionActive.value = false
   const topImagesFromTheDeck = pickWarmUpImages(folderNodes, images.value, useGetImagePath)
 
   setTimeout(() => {
@@ -76,27 +87,51 @@ const handleWarmUpStart = (folderNodes: ImageNode[]) => {
   }, 3000)
 }
 
-const handleWarmUpEnd = () => {
-  toast.add({ severity: 'success', summary: 'Warm-up ended!', detail: 'Congrats! You did it!', life: 3000 })
+const handleSessionStart = (rounds: SessionRound[]) => {
+  isOnLastImage.value = false
+  isSessionActive.value = true
+  const queue = buildSessionQueue(rounds, images.value, useGetImagePath)
+
+  setTimeout(() => {
+    imageGallery.value = queue
+    galleryComponent.value?.showGallery()
+    gestureTimerComponent.value?.startTimer(queue[0]?.durationSeconds)
+  }, 3000)
+}
+
+const handleFlowEnd = () => {
+  toast.add({
+    severity: 'success',
+    summary: isSessionActive.value ? 'Session complete!' : 'Warm-up ended!',
+    detail: isSessionActive.value ? 'Nice work — you finished the session.' : 'Congrats! You did it!',
+    life: 3000,
+  })
   galleryComponent.value?.hideGallery()
   gestureTimerComponent.value?.stopTimer()
+  if (isSessionActive.value) {
+    imageGallery.value.forEach((img) => {
+      if (img.itemImageSrc.startsWith('blob:')) URL.revokeObjectURL(img.itemImageSrc)
+    })
+  }
+  isSessionActive.value = false
 }
 
 const handleGalleryEnd = () => {
-  hasCompletedWarmUp.value = true
+  isOnLastImage.value = true
 }
 
 const handleTimerEnd = () => {
-  if (!hasCompletedWarmUp.value) {
+  if (!isOnLastImage.value) {
     toast.add({ severity: 'warn', summary: 'Times up!', detail: 'About to switch to the next image!', group: 'timer', life: 3000 })
   } else {
-    handleWarmUpEnd()
+    handleFlowEnd()
   }
 }
 
 const handleQuickWarmUp = () => {
   if (imagesForTiles.value.length === 0) return
-  hasCompletedWarmUp.value = false
+  isOnLastImage.value = false
+  isSessionActive.value = false
 
   const topImages = shuffleArray(imagesForTiles.value).slice(0, 5)
   setTimeout(() => {
@@ -107,9 +142,9 @@ const handleQuickWarmUp = () => {
 }
 
 const handleTimerToastEnd = () => {
-  if (!hasCompletedWarmUp.value) {
+  if (!isOnLastImage.value) {
     galleryComponent.value?.goToNextImage()
-    gestureTimerComponent.value?.startTimer()
+    gestureTimerComponent.value?.startTimer(currentImageDuration())
   }
 }
 
@@ -263,6 +298,7 @@ onMounted(async () => {
       <GestureTimer ref="gesture-timer" :time="timerValue" @on-times-up="handleTimerEnd" />
       <div class="flex items-center gap-1 shrink-0">
         <WarmUp @on-warm-up-start="handleWarmUpStart" />
+        <StartSession ref="start-session" :images="images" :local-folder-supported="localFolderSupported" @on-session-start="handleSessionStart" />
         <!-- Secondary actions: inline on md+, drawer trigger on mobile -->
         <div class="hidden md:flex items-center gap-1">
           <Button
@@ -305,6 +341,13 @@ onMounted(async () => {
           fluid
           :loading="localFolderLoading"
           @click="() => { actionDrawerVisible = false; openLocalFolder() }"
+        />
+        <Button
+          icon="pi pi-play"
+          label="Start a Session"
+          severity="secondary"
+          fluid
+          @click="() => { actionDrawerVisible = false; startSessionComponent?.openDialog() }"
         />
         <Button
           :icon="serverUrl ? 'pi pi-wifi' : 'pi pi-wifi'"

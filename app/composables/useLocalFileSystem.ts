@@ -31,11 +31,12 @@ async function collectImages(dirHandle: FileSystemDirectoryHandle): Promise<Gall
   return images
 }
 
-export async function useOpenLocalFolder(): Promise<{ name: string; images: GalleryImage[] }> {
-  // Revoke previous blob URLs before opening a new folder
+export function revokeAllBlobUrls(): void {
   activeBlobUrls.forEach(url => URL.revokeObjectURL(url))
   activeBlobUrls = []
+}
 
+export async function useOpenLocalFolder(): Promise<{ name: string; images: GalleryImage[] }> {
   const dirHandle = await window.showDirectoryPicker({ mode: 'read' })
   const images = await collectImages(dirHandle)
   return { name: dirHandle.name, images }

@@ -33,7 +33,7 @@ watch(activeIndex, (newIndex) => {
   if (newIndex === props.imageGallery.length - 1) emit('onGalleryEnd')
 })
 
-defineExpose({ showGallery, hideGallery, goToNextImage })
+defineExpose({ showGallery, hideGallery, goToNextImage, activeIndex })
 </script>
 
 <template>
