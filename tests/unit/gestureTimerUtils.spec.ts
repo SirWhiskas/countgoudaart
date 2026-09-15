@@ -6,8 +6,12 @@ import {
   getRandomImagesFromNode,
   resolveNodeSelection,
   pickWarmUpImages,
+  pickImagesFromFolder,
+  pickImagesFromPool,
+  buildSessionQueue,
   type ImageNode,
   type GalleryImage,
+  type SessionRound,
 } from '../../app/utils/gestureTimerUtils'
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -306,5 +310,143 @@ describe('pickWarmUpImages', () => {
   it('returns an empty array when folderNodes is empty', () => {
     const pool = makeImagePool()
     expect(pickWarmUpImages([], pool, identity)).toEqual([])
+  })
+})
+
+// ─── pickImagesFromFolder ───────────────────────────────────────────────────
+
+describe('pickImagesFromFolder', () => {
+  it('returns exactly count images when the folder has enough', () => {
+    const node = makeFolder('f', 'F', [
+      makeLeaf('a', '/a.jpg', 'A'),
+      makeLeaf('b', '/b.jpg', 'B'),
+      makeLeaf('c', '/c.jpg', 'C'),
+    ])
+    expect(pickImagesFromFolder(node, 2, identity)).toHaveLength(2)
+  })
+
+  it('returns fewer than count when the folder has fewer images', () => {
+    const node = makeFolder('f', 'F', [makeLeaf('a', '/a.jpg', 'A')])
+    expect(pickImagesFromFolder(node, 5, identity)).toHaveLength(1)
+  })
+
+  it('returns an empty array for a folder with no children', () => {
+    const node = makeFolder('empty', 'Empty', [])
+    expect(pickImagesFromFolder(node, 5, identity)).toEqual([])
+  })
+})
+
+// ─── pickImagesFromPool ─────────────────────────────────────────────────────
+
+describe('pickImagesFromPool', () => {
+  const makePool = (): GalleryImage[] => [
+    { itemImageSrc: '/a.jpg', thumbnailImageSrc: '/a.jpg', alt: '', title: 'A' },
+    { itemImageSrc: '/b.jpg', thumbnailImageSrc: '/b.jpg', alt: '', title: 'B' },
+    { itemImageSrc: '/c.jpg', thumbnailImageSrc: '/c.jpg', alt: '', title: 'C' },
+  ]
+
+  it('clamps to count when the pool is larger', () => {
+    expect(pickImagesFromPool(makePool(), 2)).toHaveLength(2)
+  })
+
+  it('returns the whole pool when count exceeds the pool size', () => {
+    expect(pickImagesFromPool(makePool(), 10)).toHaveLength(3)
+  })
+
+  it('does not mutate the input pool', () => {
+    const pool = makePool()
+    const copy = [...pool]
+    pickImagesFromPool(pool, 2)
+    expect(pool).toEqual(copy)
+  })
+
+  it('returns an empty array for an empty pool', () => {
+    expect(pickImagesFromPool([], 5)).toEqual([])
+  })
+})
+
+// ─── buildSessionQueue ──────────────────────────────────────────────────────
+
+describe('buildSessionQueue', () => {
+  const remoteTree: ImageNode[] = [
+    makeFolder('short', 'Short Poses', [
+      makeLeaf('s1', '/s1.jpg', 'S1'),
+      makeLeaf('s2', '/s2.jpg', 'S2'),
+      makeLeaf('s3', '/s3.jpg', 'S3'),
+    ]),
+    makeFolder('long', 'Long Poses', [
+      makeLeaf('l1', '/l1.jpg', 'L1'),
+      makeLeaf('l2', '/l2.jpg', 'L2'),
+    ]),
+  ]
+
+  const localPool: GalleryImage[] = [
+    { itemImageSrc: 'blob:1', thumbnailImageSrc: 'blob:1', alt: '', title: 'Local 1' },
+    { itemImageSrc: 'blob:2', thumbnailImageSrc: 'blob:2', alt: '', title: 'Local 2' },
+  ]
+
+  it('returns an empty array for an empty rounds list', () => {
+    expect(buildSessionQueue([], remoteTree, identity)).toEqual([])
+  })
+
+  it('attaches durationSeconds and roundIndex 0 for a single remote round', () => {
+    const rounds: SessionRound[] = [
+      { id: '1', sourceType: 'remote', sourceLabel: 'Short Poses', remoteNode: remoteTree[0], imageCount: 2, durationSeconds: 30 },
+    ]
+    const result = buildSessionQueue(rounds, remoteTree, identity)
+    expect(result).toHaveLength(2)
+    expect(result.every(img => img.durationSeconds === 30)).toBe(true)
+    expect(result.every(img => img.roundIndex === 0)).toBe(true)
+  })
+
+  it('resolves a local round straight from the provided pool', () => {
+    const rounds: SessionRound[] = [
+      { id: '1', sourceType: 'local', sourceLabel: 'My Folder', localImages: localPool, imageCount: 5, durationSeconds: 60 },
+    ]
+    const result = buildSessionQueue(rounds, remoteTree, identity)
+    expect(result).toHaveLength(2)
+    expect(result.every(img => img.durationSeconds === 60)).toBe(true)
+  })
+
+  it('keeps rounds in order with no interleaving, mixing remote and local sources', () => {
+    const rounds: SessionRound[] = [
+      { id: '1', sourceType: 'remote', sourceLabel: 'Short Poses', remoteNode: remoteTree[0], imageCount: 3, durationSeconds: 30 },
+      { id: '2', sourceType: 'local', sourceLabel: 'My Folder', localImages: localPool, imageCount: 2, durationSeconds: 60 },
+      { id: '3', sourceType: 'remote', sourceLabel: 'Long Poses', remoteNode: remoteTree[1], imageCount: 2, durationSeconds: 1200 },
+    ]
+    const result = buildSessionQueue(rounds, remoteTree, identity)
+    expect(result).toHaveLength(7)
+
+    const indicesByRound = (idx: number) =>
+      result.reduce<number[]>((acc, img, i) => (img.roundIndex === idx ? [...acc, i] : acc), [])
+
+    const round0Max = Math.max(...indicesByRound(0))
+    const round1Indices = indicesByRound(1)
+    const round1Min = Math.min(...round1Indices)
+    const round1Max = Math.max(...round1Indices)
+    const round2Min = Math.min(...indicesByRound(2))
+
+    expect(round0Max).toBeLessThan(round1Min)
+    expect(round1Max).toBeLessThan(round2Min)
+  })
+
+  it('skips a round whose remote node is missing from allImages, without throwing', () => {
+    const ghostNode = makeFolder('ghost', 'Ghost', [makeLeaf('g', '/g.jpg', 'Ghost')])
+    const rounds: SessionRound[] = [
+      { id: '1', sourceType: 'remote', sourceLabel: 'Ghost', remoteNode: ghostNode, imageCount: 5, durationSeconds: 30 },
+      { id: '2', sourceType: 'remote', sourceLabel: 'Short Poses', remoteNode: remoteTree[0], imageCount: 2, durationSeconds: 60 },
+    ]
+    expect(() => buildSessionQueue(rounds, remoteTree, identity)).not.toThrow()
+    const result = buildSessionQueue(rounds, remoteTree, identity)
+    expect(result).toHaveLength(2)
+    expect(result.every(img => img.roundIndex === 1)).toBe(true)
+  })
+
+  it('passes durationSeconds through verbatim, even below the 30s UI minimum', () => {
+    const rounds: SessionRound[] = [
+      { id: '1', sourceType: 'remote', sourceLabel: 'Short Poses', remoteNode: remoteTree[0], imageCount: 1, durationSeconds: 5 },
+    ]
+    const result = buildSessionQueue(rounds, remoteTree, identity)
+    expect(result[0]?.durationSeconds).toBe(5)
   })
 })

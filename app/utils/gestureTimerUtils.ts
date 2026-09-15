@@ -11,6 +11,18 @@ export interface GalleryImage {
   thumbnailImageSrc: string
   alt: string
   title: string
+  durationSeconds?: number
+  roundIndex?: number
+}
+
+export interface SessionRound {
+  id: string
+  sourceType: 'remote' | 'local'
+  sourceLabel: string
+  remoteNode?: ImageNode
+  localImages?: GalleryImage[]
+  imageCount: number
+  durationSeconds: number
 }
 
 export const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg', '.tiff', '.ico']
@@ -93,4 +105,35 @@ export const pickWarmUpImages = (
     }
   })
   return shuffleArray(galleryImages).slice(0, count)
+}
+
+export const pickImagesFromFolder = (
+  node: ImageNode,
+  count: number,
+  getImagePath: (path: string) => string,
+): GalleryImage[] => getRandomImagesFromNode(node, getImagePath).slice(0, count)
+
+export const pickImagesFromPool = (pool: GalleryImage[], count: number): GalleryImage[] =>
+  shuffleArray(pool).slice(0, count)
+
+export const buildSessionQueue = (
+  rounds: SessionRound[],
+  allImages: ImageNode[],
+  getImagePath: (path: string) => string,
+): GalleryImage[] => {
+  const queue: GalleryImage[] = []
+  rounds.forEach((round, roundIndex) => {
+    let picked: GalleryImage[] = []
+    if (round.sourceType === 'remote' && round.remoteNode) {
+      const found = imageByKey(allImages, round.remoteNode.key)
+      const foundNode = found[0]
+      if (foundNode) {
+        picked = pickImagesFromFolder(foundNode, round.imageCount, getImagePath)
+      }
+    } else if (round.sourceType === 'local' && round.localImages) {
+      picked = pickImagesFromPool(round.localImages, round.imageCount)
+    }
+    picked.forEach((img) => queue.push({ ...img, durationSeconds: round.durationSeconds, roundIndex }))
+  })
+  return queue
 }

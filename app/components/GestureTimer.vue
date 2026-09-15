@@ -13,9 +13,9 @@ const formattedTime = computed(() => {
   return `${minutes}:${seconds.toString().padStart(2, '0')}`
 })
 
-const startTimer = () => {
+const startTimer = (overrideSeconds?: number) => {
   clearInterval(timerInterval.value!)
-  clock.value = props.time ?? 120
+  clock.value = overrideSeconds ?? props.time ?? 120
 
   timerInterval.value = setInterval(() => {
     if (clock.value > 0) {
