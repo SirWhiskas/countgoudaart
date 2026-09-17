@@ -56,3 +56,11 @@ export function useGetImagePath(image: string): string {
   if (!serverUrl.value) return image
   return `${serverUrl.value}${API}/images${image}?api_key=${apiKey.value}`
 }
+
+export async function useGetRandomGallery(num: number): Promise<{ images: string[] }> {
+  const { serverUrl } = useServerConfig()
+  if (!serverUrl.value) throw new Error('Not connected to an image server')
+  const res = await fetch(`${serverUrl.value}${API}/random-gallery?num=${num}`, { headers: buildHeaders() })
+  if (!res.ok) throw new Error(`Server responded with ${res.status}`)
+  return await res.json()
+}

@@ -145,11 +145,12 @@ defineExpose({ openDialog })
         <div class="flex flex-col gap-3 p-3 border border-surface-200 dark:border-surface-700 rounded">
           <p class="text-sm font-medium">Add a round</p>
 
-          <div class="flex gap-2">
+          <div class="flex flex-col sm:flex-row gap-2">
             <Button
               label="Remote Folder"
               icon="pi pi-wifi"
               size="small"
+              class="w-full sm:w-auto"
               :outlined="draftSourceType !== 'remote'"
               :disabled="props.images.length === 0"
               @click="draftSourceType = 'remote'"
@@ -158,6 +159,7 @@ defineExpose({ openDialog })
               label="Local Folder"
               icon="pi pi-folder-open"
               size="small"
+              class="w-full sm:w-auto"
               :outlined="draftSourceType !== 'local'"
               :disabled="!props.localFolderSupported"
               @click="draftSourceType = 'local'"
@@ -173,7 +175,7 @@ defineExpose({ openDialog })
             </p>
           </div>
 
-          <div v-else-if="draftSourceType === 'local'" class="flex items-center gap-2">
+          <div v-else-if="draftSourceType === 'local'" class="flex flex-wrap items-center gap-2">
             <Button
               label="Choose folder..."
               icon="pi pi-folder-open"
@@ -182,7 +184,7 @@ defineExpose({ openDialog })
               :loading="localFolderLoadingDraft"
               @click="pickLocalFolderForRound"
             />
-            <p v-if="draftLocalName" class="text-sm text-primary-600 dark:text-primary-400">
+            <p v-if="draftLocalName" class="text-sm text-primary-600 dark:text-primary-400 min-w-0 truncate">
               <i class="pi pi-check-circle" /> {{ draftLocalName }}
             </p>
           </div>
@@ -230,14 +232,18 @@ defineExpose({ openDialog })
             <div
               v-for="(round, idx) in rounds"
               :key="round.id"
-              class="flex items-center gap-3 p-2 border border-surface-200 dark:border-surface-700 rounded"
+              class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 p-2 border border-surface-200 dark:border-surface-700 rounded"
             >
-              <span class="font-mono text-xs text-surface-400 w-5 text-center">{{ idx + 1 }}</span>
-              <i :class="round.sourceType === 'local' ? 'pi pi-desktop' : 'pi pi-folder'" class="text-primary-400" />
-              <span class="flex-1 truncate text-sm">{{ round.sourceLabel }}</span>
-              <span class="text-xs text-surface-400">{{ round.imageCount }} img</span>
-              <span class="text-xs text-surface-400 font-mono">{{ formatDuration(round.durationSeconds) }}</span>
-              <Button icon="pi pi-times" text rounded size="small" severity="secondary" aria-label="Remove round" @click="removeRound(round.id)" />
+              <div class="flex items-center gap-2 min-w-0 flex-1">
+                <span class="font-mono text-xs text-surface-400 w-5 text-center shrink-0">{{ idx + 1 }}</span>
+                <i :class="round.sourceType === 'local' ? 'pi pi-desktop' : 'pi pi-folder'" class="text-primary-400 shrink-0" />
+                <span class="min-w-0 flex-1 truncate text-sm">{{ round.sourceLabel }}</span>
+              </div>
+              <div class="flex items-center gap-3 shrink-0 pl-7 sm:pl-0">
+                <span class="text-xs text-surface-400">{{ round.imageCount }} img</span>
+                <span class="text-xs text-surface-400 font-mono">{{ formatDuration(round.durationSeconds) }}</span>
+                <Button icon="pi pi-times" text rounded size="small" severity="secondary" aria-label="Remove round" @click="removeRound(round.id)" />
+              </div>
             </div>
           </div>
         </div>
