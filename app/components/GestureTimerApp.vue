@@ -298,9 +298,9 @@ onMounted(async () => {
       <GestureTimer ref="gesture-timer" :time="timerValue" @on-times-up="handleTimerEnd" />
       <div class="flex items-center gap-1 shrink-0">
         <WarmUp @on-warm-up-start="handleWarmUpStart" />
-        <StartSession ref="start-session" :images="images" :local-folder-supported="localFolderSupported" @on-session-start="handleSessionStart" />
         <!-- Secondary actions: inline on md+, drawer trigger on mobile -->
         <div class="hidden md:flex items-center gap-1">
+          <StartSession ref="start-session" :images="images" :local-folder-supported="localFolderSupported" @on-session-start="handleSessionStart" />
           <Button
             v-if="localFolderSupported"
             icon="pi pi-folder-open"
@@ -320,6 +320,7 @@ onMounted(async () => {
             @click="openConnectDialog"
           />
           <LotteryTiles :images="imagesForTiles" />
+          <RandomGallery />
           <Button icon="pi pi-arrow-left" label="Back to main site" size="small" text severity="secondary" @click="navigateTo('/')" />
           <Button icon="pi pi-question-circle" size="small" text rounded severity="secondary" aria-label="Help" @click="helpDialogVisible = true" />
         </div>
@@ -357,6 +358,7 @@ onMounted(async () => {
           @click="() => { actionDrawerVisible = false; openConnectDialog() }"
         />
         <LotteryTiles :images="imagesForTiles" :show-label="true" />
+        <RandomGallery :show-label="true" />
       </div>
       <template #footer>
         <div class="flex flex-col gap-2">
